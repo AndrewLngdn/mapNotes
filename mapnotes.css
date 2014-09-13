@@ -1,0 +1,9 @@
+div#content {
+	margin: auto;
+	width: 70%;
+}
+
+div#map-box {
+	height: 500px;
+	background-color: grey;
+}
