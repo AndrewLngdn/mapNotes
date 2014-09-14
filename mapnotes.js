@@ -68,9 +68,9 @@ var NoteInput = React.createClass({
 	},
 	render: function() {
 		return (
-			<form className="noteForm" onSubmit={this.handleSubmit}>
-				<input type="text" ref="text" placeholder="note" />
-				<input type="submit" value="save" />
+			<form className="note-form" onSubmit={this.handleSubmit}>
+				<input className="note-input" type="text" ref="text" placeholder="Type your note here:" />
+				<input className="submit" type="submit" value="save" />
 			</form>
 		);
 	}
@@ -86,7 +86,7 @@ var NoteList = React.createClass({
 			);
 		});
 		return (
-			<ul>
+			<ul id="note-list">
 				{noteNodes}
 			</ul>
 		);
@@ -96,7 +96,7 @@ var NoteList = React.createClass({
 var Note = React.createClass({
 	render: function() {
 		return (
-			<li>
+			<li className="note">
 				{this.props.children}
 			</li>
 		);
@@ -105,10 +105,10 @@ var Note = React.createClass({
 
 
 var NOTES = [
-	{text: "order the steak rare next time, they overcook" },
-	{text: "The burger was so-so, get something else" },
-	{text: "ask for wanda, she gives a better cut" },
-	{text: "dont bother with the whiskey sour" }
+	{text: "Order the steak rare next time, they overcook." },
+	{text: "The burger was so-so, get something else." },
+	{text: "Ask for wanda, she gives a better cut." },
+	{text: "Don't bother with the whiskey sour." }
 ];
 
 
