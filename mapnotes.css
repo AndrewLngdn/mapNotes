@@ -3,6 +3,14 @@ body {
 	font-family: 'Raleway', sans-serif;
 }
 
+div#title {
+	float: left;
+	position: absolute;
+	left: 75;
+	top: 17;
+	font-size: 1.4em;
+}
+
 input.submit{
 	/*background: none;
 	border: none;
@@ -48,6 +56,12 @@ div#map-notes-content{
 
 div#map-box {
 	background-color: grey;
+}
+
+div#map {
+	position: relative;
+	height: 500px;
+	border-bottom: 1px solid #8A7E66;
 }
 
 div#notes-table{
