@@ -14,7 +14,7 @@ var geo_markers = {};
 
 
 var update_markers = function(notes){
-	if (map === undefined){
+	if (map === undefined ){
 		return;
 	}
 
@@ -23,8 +23,10 @@ var update_markers = function(notes){
 	}); 
 
 	notes.forEach(function(note){
-		geo_markers[note.id] = L.marker([note.geo.coords.latitude,
-										note.geo.coords.longitude]);
+		if (note.geo !== undefined){
+			geo_markers[note.id] = L.marker([note.geo.coords.latitude,
+										note.geo.coords.longitude]);	
+		}
 	});
 
 	$.each(geo_markers, function(index, marker){
@@ -37,26 +39,37 @@ var update_markers = function(notes){
 
 var MapNotes = React.createClass({
 	getInitialState: function(){
-		return {notes:[]};
+		return {notes:{}};
 	},
 	componentDidMount: function() {
 		this.loadNotes();
 	},
 	loadNotes: function() {
 		// TODO: use localstorage
+		// TODO: connect to server
 		this.setState({notes: this.props.notes});
 	},
 	handleNoteSubmit: function(note){
 		var notes = this.state.notes;
-		note.id = this.state.notes.length;
-		notes.unshift(note);
+		notes[note.id] = note;
+		this.setState({notes: notes});
+		//TODO: send update to server
+	},
+	handleGeoLocationUpdate: function(geo_update){
+		var notes = this.state.notes;
+		note = notes[geo_update.note_id]
+		note.geo = geo_update.geo;
+		notes[note.id] = note;
 		this.setState({notes: notes});
 	},
 	render: function() {
 		return (
 			<div id="map-notes-content">
 				<MapContainer notes={this.state.notes}/>
-				<NotesTable handleNoteSubmit={this.handleNoteSubmit} notes={this.state.notes}/>
+				<NotesTable notes={this.state.notes}
+							handleNoteSubmit={this.handleNoteSubmit} 
+							handleGeoLocationUpdate={this.handleGeoLocationUpdate}
+				/>
 			</div>
 		);
 	}
@@ -79,7 +92,10 @@ var NotesTable = React.createClass({
 	render: function() {
 		return (
 			<div id="notes-table">
-				<NoteInput onNoteSubmit={this.props.handleNoteSubmit}/>
+				<NoteInput notes={this.props.notes}
+						   onNoteSubmit={this.props.handleNoteSubmit} 
+						   onGeoLocationUpdate={this.props.handleGeoLocationUpdate} />
+
 				<NoteList notes={this.props.notes}/>
 			</div>
 		);
@@ -89,13 +105,16 @@ var NotesTable = React.createClass({
 var NoteInput = React.createClass({
 	handleSubmit: function(e){
 		e.preventDefault();
+		var note_text = this.refs.text.getDOMNode().value.trim();
+		var id = this.props.notes.length;
+
+		this.props.onNoteSubmit({id: id, text: note_text});
+		this.refs.text.getDOMNode().value = '';
 
 		if (Modernizr.geolocation) {
+
 			navigator.geolocation.getCurrentPosition(function(geo){
-				
-				var note_text = this.refs.text.getDOMNode().value.trim();
-				this.props.onNoteSubmit({text: note_text, geo:geo});
-				this.refs.text.getDOMNode().value = '';
+			this.props.onGeoLocationUpdate({note_id: id, geo: geo});
 
 			}.bind(this));
 			
@@ -122,13 +141,16 @@ var NoteInput = React.createClass({
 
 var NoteList = React.createClass({
 	render: function() {
-		var noteNodes = this.props.notes.map(function(note){
-			return (
+		var noteNodes = [];
+		$.each(this.props.notes, function(id, note){
+			var noteNode = ( 
 				<Note key={note.id}>
 					{note.text}
 				</ Note>
-			);
+				);
+			noteNodes.push(noteNode);
 		});
+
 		return (
 			<ul id="note-list">
 				{noteNodes}
