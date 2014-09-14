@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title= title
+    script(src='http://fb.me/react-0.11.1.js')
+    script(src='http://code.jquery.com/jquery-1.10.0.min.js')
+    script(src='http://fb.me/JSXTransformer-0.11.1.js')
+    link(rel='stylesheet', href='/stylesheets/mapnotes.css')
+    link(href='http://fonts.googleapis.com/css?family=Raleway',rel='stylesheet', type='text/css')
+    script(src='https://api.tiles.mapbox.com/mapbox.js/v2.1.0/mapbox.js')
+    link(href='https://api.tiles.mapbox.com/mapbox.js/v2.1.0/mapbox.css', rel='stylesheet')
+    script(src='http://modernizr.com/downloads/modernizr-latest.js')
+    script(type='text/jsx', src='/javascripts/mapnotes.js')
+
+  body
+    block content

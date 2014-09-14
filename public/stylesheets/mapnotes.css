@@ -1,0 +1,96 @@
+body {
+	background-color: #BBB2A1;
+	font-family: 'Raleway', sans-serif;
+}
+
+div#title {
+	float: left;
+	position: absolute;
+	left: 75;
+	top: 17;
+	font-size: 1.4em;
+}
+
+input.submit{
+	/*background: none;
+	border: none;
+	width: 100%;
+	height: 40px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 16px;
+	text-align: center;
+	color: rgb(100, 100, 100);
+	font-weight: 100;
+	border:none;
+	border-top: 1px solid #8A7E66;
+	*/
+	display:none;
+}
+
+form.note-form{
+	width: 100%;
+	margin:0px;
+}
+
+input.note-input{
+	margin: 0px;
+	border: none;
+	width: inherit;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+div#content {
+	margin: auto;
+	width: 70%;
+	border: 1px solid #8A7E66;
+}
+
+div#map-notes-content{
+	background-color: #ADC0B4;
+	width: 70%;
+	border: 1px solid #8A7E66;
+	margin: auto;
+}
+
+div#map-box {
+	background-color: grey;
+}
+
+div#map {
+	position: relative;
+	height: 500px;
+	border-bottom: 1px solid #8A7E66;
+}
+
+div#notes-table{
+	margin: auto;
+	width: 50%;
+	background-color: #BED6C7;
+	height: 100%;
+	border: 1px solid #8A7E66;
+	border-bottom: none;
+	height: auto;
+	margin-bottom: 15px;
+	margin-top: 15px;
+	/* border-top: none; */
+}
+
+ul#note-list {
+	margin: 0px;
+	padding: 0px;
+
+}
+
+li.note {
+	border-top: 1px solid #8A7E66;
+	padding: 10px;
+	border-bottom: none;
+	list-style: none;
+	background-color: rgb(243, 243, 243);
+}
+
+li.note:last-child {
+	border-bottom: 1px solid #8A7E66;
+}
