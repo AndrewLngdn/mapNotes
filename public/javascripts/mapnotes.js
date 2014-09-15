@@ -46,15 +46,25 @@ var MapNotes = React.createClass({
 		this.loadNotes();
 	},
 	loadNotes: function() {
-		// TODO: use localstorage
-		// TODO: connect to server
-		this.setState({notes: this.props.notes});
+		$.ajax({
+			url: this.props.notesUrl,
+			dataType: 'json',
+			success: function(notes){
+				this.setState({notes: notes});
+			}.bind(this),
+			error: function(xhr, status, err){
+				console.error(this.props.notesUrl, status, err.toString());
+			}.bind(this)
+		});
 	},
 	handleNoteSubmit: function(note){
 		var notes = this.state.notes;
 		notes[note.id] = note;
+
 		this.setState({notes: notes});
-		//TODO: send update to server
+
+		// we wait for the geo data before persisting 
+		// on our server
 	},
 	handleGeoLocationUpdate: function(geo_update){
 		var notes = this.state.notes;
@@ -62,6 +72,19 @@ var MapNotes = React.createClass({
 		note.geo = geo_update.geo;
 		notes[note.id] = note;
 		this.setState({notes: notes});
+
+		$.ajax({
+			url: this.props.notesUrl + '/create',
+			dataType: 'json', 
+			type: 'POST',
+			data: note,
+			success: function(data){
+
+			}.bind(this),
+			error: function(xhr, status, err) {
+				console.error(this.props.notesUrl, status, err.toString());
+			}.bind(this)
+		});
 	},
 	render: function() {
 		return (
@@ -241,7 +264,11 @@ var NOTES = [
 	}
 ];
 
-var mapNotes = React.renderComponent(<MapNotes notes={NOTES} />, document.body);
+var mapNotes = React.renderComponent(
+	<MapNotes 
+		notesUrl={'/notes'} 
+	/>, 
+	document.body);
 
 // Create a map in the div #map
 var map = L.mapbox.map('map', 'andrewlngdn.jgcecm6d');
