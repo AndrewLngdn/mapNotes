@@ -37,16 +37,12 @@ var MapNotes = React.createClass({
 			}.bind(this)
 		});
 	},
-	prepareMap: function(){
-
-	},
 	handleNoteSubmit: function(note){
 		var notes = this.state.notes;
 		notes[note.id] = note;
 
 		this.setState({notes: notes});
 	},
-
 	handleGeoLocationUpdate: function(geo_update){
 		var notes = this.state.notes;
 		note = notes[geo_update.note_id]
@@ -67,7 +63,7 @@ var MapNotes = React.createClass({
 			}.bind(this)
 		});
 	},
-	
+
 	render: function() {
 		return (
 			<div id="map-notes-content">
@@ -124,20 +120,13 @@ var MapContainer = React.createClass({
 				map.addLayer(marker);	
 			}
 		});
-		// this.setState(map);
 	},
 	render: function(){
-
-		// this.update_markers(this.props.notes);
-		console.log('render is getting called');
-		console.log(this.props.notes);
 		return (
 			<Map map={this.state.map}
 				 notes={this.props.notes}
 				 updateMarkers={this.updateMarkers}
 			 />
-				// <div id="title">mapNotes</div>
-			// </ Map>
 		)
 	}
 });
