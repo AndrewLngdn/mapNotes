@@ -4,46 +4,26 @@
 
 // MapNotes
 //   MapContainer
+//     Map
 //   NotesTable
 //     NoteInput
 //     NoteList
 //       Note
 
 
-L.mapbox.accessToken = 'pk.eyJ1IjoiYW5kcmV3bG5nZG4iLCJhIjoiUkhWbjIwcyJ9.WPlxRw9x7_LLOqMZ2A7onA';
-var geo_markers = {}; 
-
-
-var update_markers = function(notes){
-	if (map === undefined ){
-		return;
-	}
-
-	$.each(geo_markers, function(index, marker) {
-    	map.removeLayer(marker);
-	}); 
-
-	notes.forEach(function(note){
-		if (note.geo !== undefined){
-			geo_markers[note.id] = L.marker([note.geo.coords.latitude,
-										note.geo.coords.longitude]);	
-		}
-	});
-
-	$.each(geo_markers, function(index, marker){
-		if (map !== undefined){
-			map.addLayer(marker);	
-		}
-	});
-}
 
 
 var MapNotes = React.createClass({
 	getInitialState: function(){
-		return {notes:{}};
+		return {
+			notes:{}, 
+			geo_markers:{},
+			map: {}
+		};
 	},
 	componentDidMount: function() {
 		this.loadNotes();
+		// this.prepareMap();
 	},
 	loadNotes: function() {
 		$.ajax({
@@ -57,15 +37,16 @@ var MapNotes = React.createClass({
 			}.bind(this)
 		});
 	},
+	prepareMap: function(){
+
+	},
 	handleNoteSubmit: function(note){
 		var notes = this.state.notes;
 		notes[note.id] = note;
 
 		this.setState({notes: notes});
-
-		// we wait for the geo data before persisting 
-		// on our server
 	},
+
 	handleGeoLocationUpdate: function(geo_update){
 		var notes = this.state.notes;
 		note = notes[geo_update.note_id]
@@ -86,10 +67,13 @@ var MapNotes = React.createClass({
 			}.bind(this)
 		});
 	},
+	
 	render: function() {
 		return (
 			<div id="map-notes-content">
-				<MapContainer notes={this.state.notes}/>
+				<MapContainer notes={this.state.notes} 
+							  geo_markers={this.state.geo_markers}
+							  map={this.state.map} />
 				<NotesTable notes={this.state.notes}
 							handleNoteSubmit={this.handleNoteSubmit} 
 							handleGeoLocationUpdate={this.handleGeoLocationUpdate}
@@ -100,16 +84,75 @@ var MapNotes = React.createClass({
 });
 
 var MapContainer = React.createClass({
+	getInitialState: function(){
+		return {map:{}};
+	},
+
+	componentDidMount: function(){
+		L.mapbox.accessToken = 'pk.eyJ1IjoiYW5kcmV3bG5nZG4iLCJhIjoiUkhWbjIwcyJ9.WPlxRw9x7_LLOqMZ2A7onA';
+		var map = L.mapbox.map('map', 'andrewlngdn.jgcecm6d');
+		this.setState({map: map});
+
+		this.updateMarkers();
+	},
+	componentDidUpdate: function(){
+		this.updateMarkers();
+	},
+	updateMarkers: function(){
+		if (map === undefined || 
+			notes === undefined ||
+			$.isEmptyObject(notes)
+			){
+			return;
+		}
+		console.log(notes);
+		var geo_markers = this.props.geo_markers;
+
+		$.each(geo_markers, function(index, marker) {
+	    	map.removeLayer(marker);
+		}); 
+
+		notes.forEach(function(note){
+			if (note.geo !== undefined){
+				geo_markers[note.id] = L.marker([note.geo.coords.latitude,
+											note.geo.coords.longitude]);	
+			}
+		});
+
+		$.each(geo_markers, function(index, marker){
+			if (map !== undefined){
+				map.addLayer(marker);	
+			}
+		});
+		// this.setState(map);
+	},
 	render: function(){
 
-		update_markers(this.props.notes);
-
+		// this.update_markers(this.props.notes);
+		console.log('render is getting called');
+		console.log(this.props.notes);
 		return (
-			<div id="map">
-				<div id="title">mapNotes</div>
-			</div>
+			<Map map={this.state.map}
+				 notes={this.props.notes}
+				 updateMarkers={this.updateMarkers}
+			 />
+				// <div id="title">mapNotes</div>
+			// </ Map>
 		)
 	}
+});
+
+var Map = React.createClass({
+	componentWillReceiveProps: function(){
+		this.props.updateMarkers();
+	},
+	render: function(){
+		return (
+			<div id="map">
+			</div>
+		);
+	}
+
 });
 
 var NotesTable = React.createClass({
@@ -270,12 +313,7 @@ var mapNotes = React.renderComponent(
 	/>, 
 	document.body);
 
-// Create a map in the div #map
-var map = L.mapbox.map('map', 'andrewlngdn.jgcecm6d');
 
-map.on('ready', function(){
-	mapNotes.forceUpdate();
-})
 
 
 
