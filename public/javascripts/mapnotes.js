@@ -18,7 +18,7 @@ var MapNotes = React.createClass({
 		return {
 			notes:{}, 
 			geo_markers:{},
-			map: {}
+			map: {},
 		};
 	},
 	componentDidMount: function() {
@@ -198,9 +198,10 @@ var NoteInput = React.createClass({
 var NoteList = React.createClass({
 	render: function() {
 		var noteNodes = [];
+		var key_suffix = 0;
 		$.each(this.props.notes, function(id, note){
 			var noteNode = ( 
-				<Note key={note.id}>
+				<Note key={'mapnote-' + key_suffix++}>
 					{note.text}
 				</ Note>
 				);
@@ -218,7 +219,7 @@ var NoteList = React.createClass({
 var Note = React.createClass({
 	render: function() {
 		return (
-			<li className="note">
+			<li className="note" key={this.props.key}>
 				{this.props.children}
 			</li>
 		);
